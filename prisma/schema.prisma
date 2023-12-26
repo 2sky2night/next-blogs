@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uid    Int     @id
+  username String
+  avatar_url String
+  articles Article[] //一个用户有多个文章
+  comments Comment[] // 一个用户有多个评论
+}
+
+model Article {
+  aid Int @id @default(autoincrement())
+  title String
+  content String
+  authorId Int
+  author User @relation(fields: [authorId],references: [uid]) // 一个帖子对应一个评论
+  comments Comment[] // 一个帖子有多个评论
+  tags ArticleWithTags[] // 一个帖子有多个标签
+}
+
+model Tag {
+  tid Int @id @default(autoincrement())
+  tag_name String
+  articles ArticleWithTags[] // 一个标签有多个帖子
+}
+
+model Comment {
+  cid Int @id @default(autoincrement())
+  content String
+  uid Int
+  aid Int
+  article Article @relation(fields: [aid],references: [aid]) // 一个评论对应一个帖子
+  critic User @relation(fields: [uid],references: [uid]) // 一个评论来自于一个用户
+}
+
+model ArticleWithTags {
+  tid Int
+  aid Int
+  article Article @relation(fields: [aid],references: [aid])
+  tag Tag @relation(fields: [tid],references: [tid])
+  @@id([aid,tid])
+}
