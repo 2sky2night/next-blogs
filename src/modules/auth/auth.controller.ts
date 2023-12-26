@@ -2,13 +2,14 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Post,
   Req,
   UseGuards,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto";
 import { ValidationPipe } from "@/common/pipe";
-import { GithubTokenGuard } from "@/common/guard";
+import { AuthGuard, GithubTokenGuard } from "@/common/guard";
 import { Request } from "express";
 import { AuthService } from "@/modules/auth/auth.service";
 
@@ -36,5 +37,10 @@ export class AuthController {
     // 解析出token后需要校验请求体数据和token中的数据是否一致
     // 因为我们需要校验用户信息是否一致，才能正确地记录用户信息。
     return this.authService.loginWithGithub(createUserDto);
+  }
+  @UseGuards(AuthGuard)
+  @Get("/verifyToken")
+  verifyToken() {
+    return null;
   }
 }
