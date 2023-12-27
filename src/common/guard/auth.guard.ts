@@ -6,12 +6,10 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
-import * as process from "process";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
-
+  jwtService = new JwtService();
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // 获取请求头部
     const request = context.switchToHttp().getRequest();

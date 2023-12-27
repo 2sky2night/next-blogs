@@ -35,3 +35,17 @@ export interface GithubUserResponse {
   created_at: string;
   updated_at: string;
 }
+
+/**
+ * token负载的信息
+ */
+export interface TokenPayload {
+  /**
+   * 用户id
+   */
+  sub: number;
+  /**
+   * 用户昵称
+   */
+  username: string;
+}

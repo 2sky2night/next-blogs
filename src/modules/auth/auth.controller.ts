@@ -12,6 +12,7 @@ import { ValidationPipe } from "@/common/pipe";
 import { AuthGuard, GithubTokenGuard } from "@/common/guard";
 import { Request } from "express";
 import { AuthService } from "@/modules/auth/auth.service";
+import { Token } from "@/common/decorator";
 
 @Controller("auth")
 export class AuthController {
@@ -19,7 +20,8 @@ export class AuthController {
 
   /**
    * 创建用户
-   * @param createUserDto
+   * @param req 请求上下文
+   * @param createUserDto 创建用户的数据传输对象
    */
   @UseGuards(GithubTokenGuard)
   @Post("/login/github")
@@ -42,5 +44,11 @@ export class AuthController {
   @Get("/verifyToken")
   verifyToken() {
     return null;
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("/info")
+  async getUserInfo(@Token("sub") uid: number) {
+    return await this.authService.getUserInfo(uid);
   }
 }

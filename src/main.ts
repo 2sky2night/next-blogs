@@ -1,6 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { LoggerInterceptor, ResponseInterceptor } from "./common/interceptor";
+import { HttpExceptionFilter } from "@/common/filter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -11,6 +12,8 @@ async function bootstrap() {
   });
   // 注册打印日志
   app.useGlobalInterceptors(new LoggerInterceptor());
+  // 注册http异常响应过滤器
+  app.useGlobalFilters(new HttpExceptionFilter());
   // 注册响应拦截器-格式化响应结果
   app.useGlobalInterceptors(new ResponseInterceptor());
   // 设置接口前缀

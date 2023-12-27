@@ -33,14 +33,21 @@ export class AuthService {
     // 获取用户信息
     const user = await this.userService.findOne(uid);
     try {
-      const token = await this.jwtService.signAsync({
+      return await this.jwtService.signAsync({
         sub: uid,
         username: user.username,
       });
-      return token;
     } catch (e) {
       // 生成token失败
       throw new InternalServerErrorException();
     }
+  }
+
+  /**
+   * 获取用户信息
+   * @param uid 用户id
+   */
+  getUserInfo(uid: number) {
+    return this.userService.findOne(uid);
   }
 }

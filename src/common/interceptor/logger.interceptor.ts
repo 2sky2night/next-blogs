@@ -19,19 +19,32 @@ export class LoggerInterceptor implements NestInterceptor {
     // 调用完handle()后得到RxJs响应对象，使用tap可以得到路由函数的返回值
     const host = context.switchToHttp();
     const request = host.getRequest<Request>();
-
     return next.handle().pipe(
-      // 捕获错误
+      // 捕获错误才打印错误
       catchError((error) => {
-        this.logger.error(
-          format(
-            "%s %s %dms %s",
-            request.method,
-            request.url,
-            Date.now() - start,
-            error,
-          ),
-        );
+        if (error.status >= 500) {
+          // 服务器出错
+          this.logger.error(
+            format(
+              "%s %s %dms %s",
+              request.method,
+              request.url,
+              Date.now() - start,
+              error,
+            ),
+          );
+        } else {
+          // 客户端出错
+          this.logger.warn(
+            format(
+              "%s %s %dms %s",
+              request.method,
+              request.url,
+              Date.now() - start,
+              error.toString(),
+            ),
+          );
+        }
         return throwError(error);
       }),
       // 成功
