@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   UseGuards,
   ValidationPipe,
@@ -21,5 +23,9 @@ export class TagController {
   @Get()
   findAll() {
     return this.tagService.findAll();
+  }
+  @Get(":tid")
+  findOne(@Param("tid", ParseIntPipe) tid: number) {
+    return this.tagService.findOne(tid);
   }
 }

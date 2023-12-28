@@ -58,4 +58,27 @@ export class TagService {
     );
     return res;
   }
+
+  /**
+   * 查询帖子的标签
+   * @param aid
+   */
+  async findArticleTags(aid: number) {
+    const tids = (
+      await this.prisma.articleWithTags.findMany({ where: { aid } })
+    ).map((row) => row.tid);
+    return this.getTagsById(tids);
+  }
+
+  /**
+   * 查询标签下的文章id列表
+   * @param tid
+   */
+  async findArticlesByTag(tid: number) {
+    // 查询是否存在此标签
+    await this.findOne(tid);
+    // 查询此标签的文章
+    const res = await this.prisma.articleWithTags.findMany({ where: { tid } });
+    return res.map((item) => item.aid);
+  }
 }
